@@ -1,0 +1,29 @@
+{
+  "name": "http-signature-middleware",
+  "version": "0.0.1-0",
+  "description": "",
+  "main": "lib",
+  "scripts": {
+    "test": "mocha ./test"
+  },
+  "author": {
+    "name": "Digital Bazaar, Inc.",
+    "email": "support@digitalbazaar.com",
+    "url": "https://digitalbazaar.com/"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "http-signature-crypto": "^1.0.0",
+    "http-signature-header": "^1.1.0",
+    "jsonld": "^1.0.1",
+    "jsonld-signatures": "^2.3.0",
+    "passport-strategy": "^1.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "express": "^4.16.3",
+    "jsprim": "^2.0.0",
+    "mocha": "^5.1.1",
+    "passport": "^0.4.0"
+  }
+}
