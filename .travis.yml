@@ -4,6 +4,14 @@ node_js:
   - "10"
   - "node"
 sudo: false
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.9
+install:
+  - CC=gcc-4.9 CXX=g++-4.9 npm install
 notifications:
   email:
     on_success: change
