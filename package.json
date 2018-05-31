@@ -13,11 +13,11 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "http-signature-crypto": "^1.0.0",
     "http-signature-header": "^1.1.0",
     "jsonld": "^1.0.1",
     "jsonld-signatures": "^2.3.0",
-    "passport-strategy": "^1.0.0"
+    "passport-strategy": "^1.0.0",
+    "signature-algorithms": "^1.0.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",

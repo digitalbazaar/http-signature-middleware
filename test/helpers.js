@@ -4,7 +4,7 @@
 'use strict';
 
 const httpSignatureHeader = require('http-signature-header');
-const httpSignatureCrypto = require('http-signature-crypto');
+const signatureAlgorithms = require('signature-algorithms');
 const jsprim = require('jsprim');
 
 const api = {};
@@ -36,7 +36,7 @@ api.createHttpSignatureRequest = async (
     cryptoOptions.privateKeyBase58 = privateKeyBase58;
   }
 
-  authzHeaderOptions.signature = await httpSignatureCrypto.sign(cryptoOptions);
+  authzHeaderOptions.signature = await signatureAlgorithms.sign(cryptoOptions);
   requestOptions.headers.Authorization = httpSignatureHeader.createAuthzHeader(
     authzHeaderOptions);
 };
