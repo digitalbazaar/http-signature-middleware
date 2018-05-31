@@ -99,15 +99,17 @@ describe('http-signature-middleware', () => {
     await helpers.createHttpSignatureRequest(
       {algorithm: 'ed25519', identity, requestOptions});
     let response;
+    let err;
     try {
       response = await axios(requestOptions)
         .then(res => res.data);
-    } catch(err) {
-      should.exist(err);
-      err.response.status.should.equal(500);
-      err.response.data.should.contain('Key not found');
+    } catch(e) {
+      err = e;
     }
     should.not.exist(response);
+    should.exist(err);
+    err.response.status.should.equal(500);
+    err.response.data.should.contain('Key not found');
   });
   it('uses `getIdentity` function to retrieve identity', async () => {
     const requestOptions = {
@@ -141,15 +143,16 @@ describe('http-signature-middleware', () => {
     await helpers.createHttpSignatureRequest(
       {algorithm: 'ed25519', identity, requestOptions});
     let response;
+    let err;
     try {
-      response = await axios(requestOptions)
-        .then(res => res.data);
-    } catch(err) {
-      should.exist(err);
-      err.response.status.should.equal(500);
-      err.response.data.should.contain('User not found');
+      response = await axios(requestOptions).then(res => res.data);
+    } catch(e) {
+      err = e;
     }
     should.not.exist(response);
+    should.exist(err);
+    err.response.status.should.equal(500);
+    err.response.data.should.contain('User not found');
   });
   it('fails if host header fails validation', async () => {
     // validator is expecting a `host` of `localhost`
@@ -162,13 +165,15 @@ describe('http-signature-middleware', () => {
     await helpers.createHttpSignatureRequest(
       {algorithm: 'ed25519', identity, requestOptions});
     let response;
+    let err;
     try {
-      response = await axios(requestOptions)
-        .then(res => res.data);
-    } catch(err) {
-      should.exist(err);
+      response = await axios(requestOptions).then(res => res.data);
+    } catch(e) {
+      err = e;
     }
     should.not.exist(response);
+    should.exist(err);
+    err.response.data.should.contain('Invalid host specified in the request');
   });
   it('fails if publicKey has been revoked', async () => {
     const requestOptions = {
@@ -180,15 +185,16 @@ describe('http-signature-middleware', () => {
     await helpers.createHttpSignatureRequest(
       {algorithm: 'ed25519', identity, requestOptions});
     let response;
+    let err;
     try {
-      response = await axios(requestOptions)
-        .then(res => res.data);
-    } catch(err) {
-      should.exist(err);
-      err.response.status.should.equal(500);
-      err.response.data.should.contain('Public key has been revoked');
+      response = await axios(requestOptions).then(res => res.data);
+    } catch(e) {
+      err = e;
     }
     should.not.exist(response);
+    should.exist(err);
+    err.response.status.should.equal(500);
+    err.response.data.should.contain('Public key has been revoked');
   });
   it('fails if algorithm does not match key type', async () => {
     const requestOptions = {
@@ -200,13 +206,14 @@ describe('http-signature-middleware', () => {
     await helpers.createHttpSignatureRequest(
       {algorithm: 'rsa-sha512', identity, requestOptions});
     let response;
+    let err;
     try {
-      response = await axios(requestOptions)
-        .then(res => res.data);
-    } catch(err) {
-      should.exist(err);
-      err.response.data.should.contain('does not match the public key type');
+      response = await axios(requestOptions).then(res => res.data);
+    } catch(e) {
+      err = e;
     }
     should.not.exist(response);
+    should.exist(err);
+    err.response.data.should.contain('does not match the public key type');
   });
 });
