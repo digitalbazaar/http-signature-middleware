@@ -29,7 +29,7 @@ describe('http-signature-middleware', () => {
     server.close(callback);
   });
 
-  it('dereferences an https ed25519 key', async() => {
+  it('dereferences an https ed25519 key', async () => {
     const requestOptions = {
       headers: {},
       method: 'GET',
@@ -49,7 +49,7 @@ describe('http-signature-middleware', () => {
     response.success.should.be.true;
     response.id.should.equal(identity.id);
   });
-  it('dereferences an https rsa key', async() => {
+  it('dereferences an https rsa key', async () => {
     const requestOptions = {
       headers: {},
       method: 'GET',
@@ -69,7 +69,7 @@ describe('http-signature-middleware', () => {
     response.success.should.be.true;
     response.id.should.equal(identity.id);
   });
-  it('uses `getKey` function to retrieve key', async() => {
+  it('uses `getKey` function to retrieve key', async () => {
     const requestOptions = {
       headers: {},
       method: 'GET',
@@ -89,7 +89,7 @@ describe('http-signature-middleware', () => {
     response.success.should.be.true;
     response.id.should.equal(identity.id);
   });
-  it('fails if publicKey is not found', async() => {
+  it('fails if publicKey is not found', async () => {
     const requestOptions = {
       headers: {},
       method: 'GET',
@@ -109,7 +109,7 @@ describe('http-signature-middleware', () => {
     }
     should.not.exist(response);
   });
-  it('uses `getIdentity` function to retrieve identity', async() => {
+  it('uses `getIdentity` function to retrieve identity', async () => {
     const requestOptions = {
       headers: {},
       method: 'GET',
@@ -131,7 +131,7 @@ describe('http-signature-middleware', () => {
     should.exist(response.user);
     response.user.vip.should.be.true;
   });
-  it('fails if identity is not found', async() => {
+  it('fails if identity is not found', async () => {
     const requestOptions = {
       headers: {},
       method: 'GET',
@@ -151,7 +151,7 @@ describe('http-signature-middleware', () => {
     }
     should.not.exist(response);
   });
-  it('fails if host header fails validation', async() => {
+  it('fails if host header fails validation', async () => {
     // validator is expecting a `host` of `localhost`
     const requestOptions = {
       headers: {},
@@ -170,7 +170,7 @@ describe('http-signature-middleware', () => {
     }
     should.not.exist(response);
   });
-  it('fails if publicKey has been revoked', async() => {
+  it('fails if publicKey has been revoked', async () => {
     const requestOptions = {
       headers: {},
       method: 'GET',
@@ -190,7 +190,7 @@ describe('http-signature-middleware', () => {
     }
     should.not.exist(response);
   });
-  it('fails if algorithm does not match key type', async() => {
+  it('fails if algorithm does not match key type', async () => {
     const requestOptions = {
       headers: {},
       method: 'GET',

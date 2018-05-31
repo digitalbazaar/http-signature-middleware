@@ -11,7 +11,7 @@ const api = {};
 module.exports = api;
 
 // mutates requestOptions
-api.createHttpSignatureRequest = async(
+api.createHttpSignatureRequest = async (
   {algorithm, identity, requestOptions}) => {
   if(!requestOptions.headers.date) {
     requestOptions.headers.date = jsprim.rfc1123(new Date());

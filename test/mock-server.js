@@ -49,7 +49,7 @@ api.createServer = () => {
 
   const mwBeta = new Middleware({name: 'customGetKey'});
   mwBeta.use('validateRequest', _validateRequest);
-  mwBeta.use('getKey', async({id}) => {
+  mwBeta.use('getKey', async ({id}) => {
     if(id !== 'https://localhost:18443/keys/beta') {
       throw new Error(`Key not found: ${id}`);
     }
@@ -68,7 +68,7 @@ api.createServer = () => {
   mwGamma.use('jsigs', jsigs);
   mwGamma.use('validateRequest', _validateRequest);
   mwGamma.use('getKey', mwGamma.ldGetKey.bind(mwGamma));
-  mwGamma.use('getUser', async({keyDoc}) => {
+  mwGamma.use('getUser', async ({keyDoc}) => {
     const {owner: id} = keyDoc;
     if(id === 'https://localhost:18443/tests/i/alpha') {
       return {id, vip: true};
