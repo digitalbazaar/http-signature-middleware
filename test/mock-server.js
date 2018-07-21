@@ -136,7 +136,7 @@ api.createServer = () => {
   return app;
 };
 
-async function _validateRequest(req) {
+async function _validateRequest(req, options) {
   const host = req.header('host');
   if(host !== `localhost:${config.port}`) {
     throw new Error(`Invalid host specified in the request: ${host}`);
