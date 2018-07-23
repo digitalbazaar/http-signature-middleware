@@ -67,6 +67,124 @@ describe('http-signature-middleware', () => {
     response.success.should.be.true;
     response.id.should.equal(identity.id);
   });
+  it('invokes an ocap', async () => {
+    const requestOptions = {
+      headers: {
+        'object-capability': 'eyJpZCI6ICJ1cm46MTIzIn0'
+      },
+      method: 'GET',
+      url: `https://localhost:${config.port}/ocap`,
+    };
+    const identity = mockData.identities.alpha;
+    await helpers.createHttpSignatureRequest(
+      {algorithm: 'ed25519', identity, requestOptions,
+        additionalIncludeHeaders: ['object-capability']});
+    let response;
+    try {
+      response = (await axios(requestOptions)).data;
+    } catch(err) {
+      should.not.exist(err);
+    }
+    response.should.be.an('object');
+    response.success.should.be.true;
+    response.id.should.equal(identity.id);
+  });
+  it('fails to invoke an ocap because it is not signed', async () => {
+    const requestOptions = {
+      headers: {
+        'object-capability': 'eyJpZCI6ICJ1cm46MTIzIn0'
+      },
+      method: 'GET',
+      url: `https://localhost:${config.port}/ocap`,
+    };
+    const identity = mockData.identities.alpha;
+    await helpers.createHttpSignatureRequest(
+      {algorithm: 'ed25519', identity, requestOptions});
+    let response;
+    let err;
+    try {
+      response = await axios(requestOptions);
+    } catch(e) {
+      err = e;
+    }
+    should.not.exist(response);
+    should.exist(err);
+    err.response.status.should.equal(500);
+    err.response.data.should.contain(
+      '"Object-Capability" header specified but not signed');
+  });
+  it('fails to invoke an ocap because it is not found', async () => {
+    const requestOptions = {
+      headers: {
+        'object-capability': 'eyJpZCI6ICJ1cm46NDU2In0'
+      },
+      method: 'GET',
+      url: `https://localhost:${config.port}/ocap`,
+    };
+    const identity = mockData.identities.alpha;
+    await helpers.createHttpSignatureRequest(
+      {algorithm: 'ed25519', identity, requestOptions,
+        additionalIncludeHeaders: ['object-capability']});
+    let response;
+    let err;
+    try {
+      response = await axios(requestOptions);
+    } catch(e) {
+      err = e;
+    }
+    should.not.exist(response);
+    should.exist(err);
+    err.response.status.should.equal(500);
+    err.response.data.should.contain('Object capability not found');
+  });
+  it('fails to invoke ocaps because one is not found', async () => {
+    const requestOptions = {
+      headers: {
+        'object-capability': 'eyJpZCI6ICJ1cm46MTIzIn0, eyJpZCI6ICJ1cm46NDU2In0'
+      },
+      method: 'GET',
+      url: `https://localhost:${config.port}/ocap`,
+    };
+    const identity = mockData.identities.alpha;
+    await helpers.createHttpSignatureRequest(
+      {algorithm: 'ed25519', identity, requestOptions,
+        additionalIncludeHeaders: ['object-capability']});
+    let response;
+    let err;
+    try {
+      response = await axios(requestOptions);
+    } catch(e) {
+      err = e;
+    }
+    should.not.exist(response);
+    should.exist(err);
+    err.response.status.should.equal(500);
+    err.response.data.should.contain('Object capability not found');
+  });
+  it('fails to invoke an ocap because of a bad key type', async () => {
+    const requestOptions = {
+      headers: {
+        'object-capability': 'eyJpZCI6ICJ1cm46MTIzIn0'
+      },
+      method: 'GET',
+      url: `https://localhost:${config.port}/ocap-bad-key-type`,
+    };
+    const identity = mockData.identities.alpha;
+    await helpers.createHttpSignatureRequest(
+      {algorithm: 'ed25519', identity, requestOptions,
+        additionalIncludeHeaders: ['object-capability']});
+    let response;
+    let err;
+    try {
+      response = await axios(requestOptions);
+    } catch(e) {
+      err = e;
+    }
+    should.not.exist(response);
+    should.exist(err);
+    err.response.status.should.equal(500);
+    err.response.data.should.contain('key is not a "CryptographicKey"');
+  });
   it('uses `getKey` function to retrieve key', async () => {
     const requestOptions = {
       headers: {},

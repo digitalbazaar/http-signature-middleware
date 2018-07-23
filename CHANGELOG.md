@@ -1,5 +1,9 @@
 # http-signature-middleware
 
+### Added
+- `Object-Capability` parsing support for invoking
+  object capabilities via an HTTP signature.
+
 ### Changed
 - ***BREAKING*** Use named parameters in API hooks.
 

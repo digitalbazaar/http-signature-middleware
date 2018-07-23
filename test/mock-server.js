@@ -76,10 +76,22 @@ api.createServer = () => {
     throw new Error(`User not found: ${id}`);
   });
 
+  const mwOcap = new Middleware({name: 'ocap'});
+  mwOcap.use('jsigs', jsigs);
+  mwOcap.use('getKey', mwOcap.ldGetKey.bind(mwOcap));
+  mwOcap.use('validateRequest', _validateRequest);
+  mwOcap.use('validateObjectCapabilities', _validateObjectCapabilities);
+
+  const mwOcapBadKeyType = new Middleware({name: 'ocapBadKeyType'});
+  mwOcapBadKeyType.use('jsigs', jsigs);
+  mwOcapBadKeyType.use('getKey', mwOcap.ldGetKey.bind(mwOcapBadKeyType));
+  mwOcapBadKeyType.use('validateRequest', _validateRequest);
+
   app.use(passport.initialize());
   passport.use(mwAlpha);
   passport.use(mwBeta);
   passport.use(mwGamma);
+  passport.use(mwOcap);
 
   function testEndpoint(req, res) {
     // console.log('USER INFO', req.user);
@@ -91,20 +103,28 @@ api.createServer = () => {
   app.get('/alpha', passport.authenticate('ldBasic'), testEndpoint);
   app.get('/beta', passport.authenticate('customGetKey'), testEndpoint);
   app.get('/gamma', passport.authenticate('customGetIdentity'), testEndpoint);
+  app.get('/ocap', passport.authenticate('ocap'), testEndpoint);
+  app.get('/ocap-bad-key-type', passport.authenticate('ocap', {
+    keyType: 'CryptographicKey'
+  }), testEndpoint);
 
   app.get('/tests/i/:ownerId', (req, res) => {
     const {ownerId} = req.params;
-    res.json({
-      '@context': constants.IDENTITY_CONTEXT_V1_URL,
-      'id': `https://localhost/tests/i/${ownerId}`,
-      'type': 'Identity',
-      'publicKey': {
-        'type': 'CryptographicKey',
-        'owner': `https://localhost:${config.port}/tests/i/${ownerId}`,
-        'label': 'Access Key 1',
-        'id': `https://localhost:${config.port}/keys/${ownerId}`,
+    const ownerDoc = {
+      '@context': constants.SECURITY_CONTEXT_V2_URL,
+      id: `https://localhost/tests/i/${ownerId}`,
+      publicKey: {
+        id: `https://localhost:${config.port}/keys/${ownerId}`,
+        type: 'RsaVerificationKey2018',
+        owner: `https://localhost:${config.port}/tests/i/${ownerId}`,
+        label: 'Access Key 1'
       }
-    });
+    };
+    if(ownerId === 'alpha') {
+      // allow key to be used for invoking ocaps
+      ownerDoc['sec:capabilityInvocation'] = ownerDoc.publicKey.id;
+    }
+    res.json(ownerDoc);
   });
   app.get('/keys/:keyId', (req, res) => {
     const {keyId} = req.params;
@@ -112,17 +132,17 @@ api.createServer = () => {
       mockData.identities[keyId].keys.publicKey;
     const keyDoc = {
       '@context': constants.SECURITY_CONTEXT_V2_URL,
-      type: ['CryptographicKey'],
-      owner: `https://localhost:${config.port}/tests/i/${keyId}`,
-      label: 'Access Key 1',
       id: `https://localhost:${config.port}/keys/${keyId}`,
+      type: null,
+      owner: `https://localhost:${config.port}/tests/i/${keyId}`,
+      label: 'Access Key 1'
     };
     if(publicKeyBase58) {
-      keyDoc.type.push('Ed25519VerificationKey2018');
+      keyDoc.type = 'Ed25519VerificationKey2018';
       keyDoc.publicKeyBase58 = publicKeyBase58;
     }
     if(publicKeyPem) {
-      keyDoc.type.push('RsaVerificationKey2018');
+      keyDoc.type = 'RsaVerificationKey2018';
       keyDoc.publicKeyPem = publicKeyPem;
     }
     if(revoked) {
@@ -146,4 +166,15 @@ async function _validateRequest({req, options}) {
   if(host !== `localhost:${config.port}`) {
     throw new Error(`Invalid host specified in the request: ${host}`);
   }
+  if(req.capabilities) {
+    if(req.capabilities.length > 1 || req.capabilities[0].id !== 'urn:123') {
+      const filtered = req.capabilities.filter(x => x.id !== 'urn:123');
+      throw new Error(`Object capability not found: ${filtered}`);
+    }
+  }
+}
+
+function _validateObjectCapabilities({req, keyDoc, parsed, options}) {
+  // allow any ocaps
+  return;
 }

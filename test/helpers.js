@@ -12,11 +12,12 @@ module.exports = api;
 
 // mutates requestOptions
 api.createHttpSignatureRequest = async (
-  {algorithm, identity, requestOptions}) => {
+  {algorithm, identity, requestOptions, additionalIncludeHeaders = []}) => {
   if(!requestOptions.headers.date) {
     requestOptions.headers.date = jsprim.rfc1123(new Date());
   }
-  const includeHeaders = ['date', 'host', '(request-target)'];
+  const includeHeaders = ['date', 'host', '(request-target)']
+    .concat(additionalIncludeHeaders);
   const plaintext = httpSignatureHeader.createSignatureString(
     {includeHeaders, requestOptions});
   const keyId = identity.keys.publicKey.id;
