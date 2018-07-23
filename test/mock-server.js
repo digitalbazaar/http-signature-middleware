@@ -49,9 +49,9 @@ api.createServer = () => {
 
   const mwBeta = new Middleware({name: 'customGetKey'});
   mwBeta.use('validateRequest', _validateRequest);
-  mwBeta.use('getKey', async ({id}) => {
-    if(id !== 'https://localhost:18443/keys/beta') {
-      throw new Error(`Key not found: ${id}`);
+  mwBeta.use('getKey', async ({keyId}) => {
+    if(keyId !== 'https://localhost:18443/keys/beta') {
+      throw new Error(`Key not found: ${keyId}`);
     }
     const {publicKeyBase58} = mockData.identities.beta.keys.publicKey;
     return {
@@ -134,13 +134,14 @@ api.createServer = () => {
   });
 
   app.use((err, req, res, next) => {
+    //console.error(err);
     res.status(500).send(err.toString());
   });
 
   return app;
 };
 
-async function _validateRequest(req, options) {
+async function _validateRequest({req, options}) {
   const host = req.header('host');
   if(host !== `localhost:${config.port}`) {
     throw new Error(`Invalid host specified in the request: ${host}`);

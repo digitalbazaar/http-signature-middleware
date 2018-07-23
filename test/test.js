@@ -13,7 +13,7 @@ const mockData = require('./mock-data');
 const mockServer = require('./mock-server');
 const should = chai.should();
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 let server = null;
 
@@ -40,8 +40,7 @@ describe('http-signature-middleware', () => {
       {algorithm: 'ed25519', identity, requestOptions});
     let response;
     try {
-      response = await axios(requestOptions)
-        .then(res => res.data);
+      response = (await axios(requestOptions)).data;
     } catch(err) {
       should.not.exist(err);
     }
@@ -60,8 +59,7 @@ describe('http-signature-middleware', () => {
       {algorithm: 'rsa-sha256', identity, requestOptions});
     let response;
     try {
-      response = await axios(requestOptions)
-        .then(res => res.data);
+      response = (await axios(requestOptions)).data;
     } catch(err) {
       should.not.exist(err);
     }
@@ -80,8 +78,7 @@ describe('http-signature-middleware', () => {
       {algorithm: 'ed25519', identity, requestOptions});
     let response;
     try {
-      response = await axios(requestOptions)
-        .then(res => res.data);
+      response = (await axios(requestOptions)).data;
     } catch(err) {
       should.not.exist(err);
     }
@@ -101,8 +98,7 @@ describe('http-signature-middleware', () => {
     let response;
     let err;
     try {
-      response = await axios(requestOptions)
-        .then(res => res.data);
+      response = await axios(requestOptions);
     } catch(e) {
       err = e;
     }
@@ -122,8 +118,7 @@ describe('http-signature-middleware', () => {
       {algorithm: 'ed25519', identity, requestOptions});
     let response;
     try {
-      response = await axios(requestOptions)
-        .then(res => res.data);
+      response = (await axios(requestOptions)).data;
     } catch(err) {
       should.not.exist(err);
     }
@@ -145,7 +140,7 @@ describe('http-signature-middleware', () => {
     let response;
     let err;
     try {
-      response = await axios(requestOptions).then(res => res.data);
+      response = await axios(requestOptions);
     } catch(e) {
       err = e;
     }
@@ -167,7 +162,7 @@ describe('http-signature-middleware', () => {
     let response;
     let err;
     try {
-      response = await axios(requestOptions).then(res => res.data);
+      response = await axios(requestOptions);
     } catch(e) {
       err = e;
     }
@@ -187,7 +182,7 @@ describe('http-signature-middleware', () => {
     let response;
     let err;
     try {
-      response = await axios(requestOptions).then(res => res.data);
+      response = await axios(requestOptions);
     } catch(e) {
       err = e;
     }
@@ -208,7 +203,7 @@ describe('http-signature-middleware', () => {
     let response;
     let err;
     try {
-      response = await axios(requestOptions).then(res => res.data);
+      response = await axios(requestOptions);
     } catch(e) {
       err = e;
     }

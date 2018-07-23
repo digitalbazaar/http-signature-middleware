@@ -1,5 +1,8 @@
 # http-signature-middleware
 
+### Changed
+- ***BREAKING*** Use named parameters in API hooks.
+
 ## 1.1.0 - 2018-07-21
 
 ### Added
