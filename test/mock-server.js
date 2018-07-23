@@ -133,6 +133,10 @@ api.createServer = () => {
     res.json(keyDoc);
   });
 
+  app.use((err, req, res, next) => {
+    res.status(500).send(err.toString());
+  });
+
   return app;
 };
 
