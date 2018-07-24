@@ -70,7 +70,7 @@ describe('http-signature-middleware', () => {
   it('invokes an ocap', async () => {
     const requestOptions = {
       headers: {
-        'object-capability': 'eyJpZCI6ICJ1cm46MTIzIn0'
+        'object-capability': 'type=ocapld; value=eyJpZCI6ICJ1cm46MTIzIn0'
       },
       method: 'GET',
       url: `https://localhost:${config.port}/ocap`,
@@ -92,7 +92,7 @@ describe('http-signature-middleware', () => {
   it('fails to invoke an ocap because it is not signed', async () => {
     const requestOptions = {
       headers: {
-        'object-capability': 'eyJpZCI6ICJ1cm46MTIzIn0'
+        'object-capability': 'type=ocapld; value=eyJpZCI6ICJ1cm46MTIzIn0'
       },
       method: 'GET',
       url: `https://localhost:${config.port}/ocap`,
@@ -116,7 +116,7 @@ describe('http-signature-middleware', () => {
   it('fails to invoke an ocap because it is not found', async () => {
     const requestOptions = {
       headers: {
-        'object-capability': 'eyJpZCI6ICJ1cm46NDU2In0'
+        'object-capability': 'type=ocapld; value=eyJpZCI6ICJ1cm46NDU2In0'
       },
       method: 'GET',
       url: `https://localhost:${config.port}/ocap`,
@@ -140,7 +140,10 @@ describe('http-signature-middleware', () => {
   it('fails to invoke ocaps because one is not found', async () => {
     const requestOptions = {
       headers: {
-        'object-capability': 'eyJpZCI6ICJ1cm46MTIzIn0, eyJpZCI6ICJ1cm46NDU2In0'
+        'object-capability': [
+          'type=ocapld; value=eyJpZCI6ICJ1cm46MTIzIn0',
+          'type=ocapld; value=eyJpZCI6ICJ1cm46NDU2In0'
+        ]
       },
       method: 'GET',
       url: `https://localhost:${config.port}/ocap`,
@@ -164,7 +167,7 @@ describe('http-signature-middleware', () => {
   it('fails to invoke an ocap because of a bad key type', async () => {
     const requestOptions = {
       headers: {
-        'object-capability': 'eyJpZCI6ICJ1cm46MTIzIn0'
+        'object-capability': 'type=ocapld; value=eyJpZCI6ICJ1cm46MTIzIn0'
       },
       method: 'GET',
       url: `https://localhost:${config.port}/ocap-bad-key-type`,

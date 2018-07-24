@@ -166,11 +166,9 @@ async function _validateRequest({req, options}) {
   if(host !== `localhost:${config.port}`) {
     throw new Error(`Invalid host specified in the request: ${host}`);
   }
-  if(req.capabilities) {
-    if(req.capabilities.length > 1 || req.capabilities[0].id !== 'urn:123') {
-      const filtered = req.capabilities.filter(x => x.id !== 'urn:123');
-      throw new Error(`Object capability not found: ${filtered}`);
-    }
+  if(req.capabilities && req.capabilities.some(x => x.id !== 'urn:123')) {
+    const filtered = req.capabilities.filter(x => x.id !== 'urn:123');
+    throw new Error(`Object capability not found: ${filtered}`);
   }
 }
 
