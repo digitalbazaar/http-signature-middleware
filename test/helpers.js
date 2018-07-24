@@ -16,8 +16,8 @@ api.createHttpSignatureRequest = async (
   if(!requestOptions.headers.date) {
     requestOptions.headers.date = jsprim.rfc1123(new Date());
   }
-  const includeHeaders = ['date', 'host', '(request-target)']
-    .concat(additionalIncludeHeaders);
+  const includeHeaders = additionalIncludeHeaders.concat(
+    ['date', 'host', '(request-target)']);
   const plaintext = httpSignatureHeader.createSignatureString(
     {includeHeaders, requestOptions});
   const keyId = identity.keys.publicKey.id;
