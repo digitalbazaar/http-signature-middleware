@@ -4,6 +4,7 @@
 'use strict';
 
 const axios = require('axios');
+const base64url = require('base64url');
 const chai = require('chai');
 const config = require('./config');
 const fs = require('fs');
@@ -70,7 +71,9 @@ describe('http-signature-middleware', () => {
   it('invokes an ocap', async () => {
     const requestOptions = {
       headers: {
-        'object-capability': 'type=ocapld; value=eyJpZCI6ICJ1cm46MTIzIn0'
+        'object-capability':
+          'type=ocapld; value=eyJpZCI6ICJ1cm46MTIzIn0; ' +
+          `action=${base64url('foo')}`
       },
       method: 'GET',
       url: `https://localhost:${config.port}/ocap`,
