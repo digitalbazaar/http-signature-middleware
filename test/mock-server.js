@@ -80,7 +80,7 @@ api.createServer = () => {
   mwOcap.use('jsigs', jsigs);
   mwOcap.use('getKey', mwOcap.ldGetKey.bind(mwOcap));
   mwOcap.use('validateRequest', _validateRequest);
-  mwOcap.use('validateObjectCapabilities', _validateObjectCapabilities);
+  mwOcap.use('validateCapabilityInvocations', _validateCapabilityInvocations);
 
   const mwOcapBadKeyType = new Middleware({name: 'ocapBadKeyType'});
   mwOcapBadKeyType.use('jsigs', jsigs);
@@ -166,13 +166,15 @@ async function _validateRequest({req, options}) {
   if(host !== `localhost:${config.port}`) {
     throw new Error(`Invalid host specified in the request: ${host}`);
   }
-  if(req.capabilities && req.capabilities.some(x => x.id !== 'urn:123')) {
-    const filtered = req.capabilities.filter(x => x.id !== 'urn:123');
+  if(req.capabilityInvocations &&
+    req.capabilityInvocations.some(x => x.capability.id !== 'urn:123')) {
+    const filtered = req.capabilityInvocations.filter(
+      x => x.capability.id !== 'urn:123');
     throw new Error(`Object capability not found: ${filtered}`);
   }
 }
 
-function _validateObjectCapabilities({req, keyDoc, parsed, options}) {
+function _validateCapabilityInvocations({req, keyDoc, parsed, options}) {
   // allow any ocaps
   return;
 }
